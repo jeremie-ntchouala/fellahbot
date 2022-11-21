@@ -1,0 +1,75 @@
+<?xml version="1.0"?>
+<launch>
+
+    <!-- these are the arguments you can pass this launch file, for example paused:=true -->
+    <arg name="paused" default="false"/>
+    <arg name="use_sim_time" default="true"/>
+    <arg name="gui" default="true"/>
+    <arg name="headless" default="false"/>
+    <arg name="debug" default="false"/>
+    <arg name="verbose" default="false"/>
+    <arg name="model" default="$(find fellahbot_description)/urdf/fellahbot.urdf.xacro"/>
+
+    <arg name="namespace" default="/fellahbot" />
+    <arg name="arg_name" value="/test1"/>
+
+
+    <arg name="world_name" value="worlds/empty_world" />
+    <arg name="cmd_timeout" value="0.5"/>
+    <arg name="x" value="0.0"/>
+    <arg name="y" value="0.0"/>
+    <arg name="z" value="0.0" />
+    <arg name="roll" value="0.0"/>
+    <arg name="pitch" value="0.0"/>
+    <arg name="yaw" value="0.0"/>
+
+    <group ns="$(arg arg_name)">
+
+        <!-- We resume the logic in empty_world.launch, changing only the name of the world to be launched -->
+        <include file="$(find gazebo_ros)/launch/empty_world.launch">
+            <arg name="debug" value="$(arg debug)" />
+            <arg name="gui" value="$(arg gui)" />
+            <arg name="paused" value="$(arg paused)"/>
+            <arg name="use_sim_time" value="$(arg use_sim_time)"/>
+            <arg name="headless" value="$(arg headless)"/>
+            <arg name="verbose" value="$(arg verbose)"/>
+        </include>
+
+
+        <!-- Load the URDF into the ROS Parameter Server -->
+        <param name="robot_description" command="$(find xacro)/xacro --inorder '$(arg model)'" />
+
+        <!-- Load ros_control controller configuration parameters -->
+        <rosparam file="$(find fellahbot_description)/config/control/fellahbot_ackermann_steering_controller.yaml" command="load" ns="$(arg arg_name)" />
+        <rosparam file="$(find fellahbot_description)/config/control/fellahbot_controller_gains.yaml" command="load" ns="$(arg arg_name)" />
+        <rosparam file="$(find fellahbot_description)/config/control/fellahbot_joint_state_publisher.yaml" command="load" ns="$(arg arg_name)" />
+        <rosparam file="$(find fellahbot_description)/config/control/fellahbot_steer_bot_hardware_gazebo.yaml" command="load" ns="$(arg arg_name)" />
+
+        <!-- Spawn the controllers -->
+        <node pkg="controller_manager" type="spawner" name="controller_spawner" ns="$(arg arg_name)" args="joint_state_publisher ackermann_steering_controller" output="screen" respawn="false" />
+
+        <!-- Launch  the robot state publisher -->
+        <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher">
+            <param name="publish_frequency" type="double" value="50.0" />
+        </node>
+
+        <!-- Launch a rqt steering GUI for publishing to /steer_bot/steer_drive_controller/cmd_vel -->
+        <node pkg="rqt_robot_steering" type="rqt_robot_steering" name="rqt_robot_steering">
+            <param name="default_topic" value="$(arg arg_name)/ackermann_steering_controller/cmd_vel"/>
+        </node>
+
+
+        <!-- push robot_description to factory and spawn robot in gazebo -->
+        <node name="fellahbot_spawner" pkg="gazebo_ros" type="spawn_model" args="-urdf 
+                    -model fellahbot 
+                    -param robot_description
+                    -gazebo_namespace /$(arg arg_name)/gazebo
+                    -x $(arg x) -y $(arg y) -z $(arg z)
+                    -R $(arg roll) -P $(arg pitch) -Y $(arg yaw)" respawn="false" output="screen" />
+
+
+
+    </group>
+
+
+</launch>

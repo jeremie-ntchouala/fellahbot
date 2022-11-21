@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="inertials">
+
+    <!-- Inertial for solid cuboid with dimensions x y z  -->
+    <xacro:macro name="solid_cuboid_inertial" params="rpy xyz mass x y z">
+        <inertial>
+            <origin rpy="${rpy}" xyz="${xyz}"/>
+            <mass value="${mass}" />
+            <inertia
+                ixx="${mass * (y * y + z * z) / 12.0}" ixy="0.0" ixz="0.0"
+                iyy="${mass * (x * x + z * z) / 12.0}" iyz="0.0"
+                izz="${mass * (x * x + y * y) / 12.0}" />
+        </inertial>
+    </xacro:macro>
+
+    <!-- Inertial for solid cylinder with radius and length aligned to z-axis  -->
+    <xacro:macro name="solid_cylinder_inertial" params="rpy xyz mass radius length">
+        <inertial>
+            <origin rpy="${rpy}" xyz="${xyz}"/>
+            <mass value="${mass}" />
+            <inertia
+                ixx="${mass * (3.0 * radius * radius + length * length) / 12.0}" ixy="0.0" ixz="0.0"
+                iyy="${mass * (3.0 * radius * radius + length * length) / 12.0}" iyz="0.0"
+                izz="${mass * (radius * radius) / 2.0}" />
+        </inertial>
+    </xacro:macro>
+
+    <!-- Inertial for solid sphere with radius  -->
+    <xacro:macro name="solid_sphere_inertial" params="rpy xyz mass radius">
+        <inertial>
+            <origin rpy="${rpy}" xyz="${xyz}"/>
+            <mass value="${mass}" />
+            <inertia
+                ixx="${mass * (2.0 * radius * radius) / 5.0}" ixy="0.0" ixz="0.0"
+                iyy="${mass * (2.0 * radius * radius) / 5.0}" iyz="0.0"
+                izz="${mass * (2.0 * radius * radius) / 5.0}" />
+        </inertial>
+    </xacro:macro>
+
+    <!-- A null inertial - used in placeholder links to esure the model will work in Gazebo -->
+    <xacro:macro name="null_inertial">
+        <inertial>
+            <mass value="0.001"/>
+            <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
+        </inertial>
+    </xacro:macro>
+
+    <!-- A default inertial - used in placeholder links to esure the model will work in Gazebo -->
+    <xacro:macro name="default_inertial" params="mass">
+        <inertial>
+            <mass value="${mass}"/>
+            <inertia ixx="1.0" ixy="0" ixz="0" iyy="1.0" iyz="0" izz="1.0"/>
+        </inertial>
+    </xacro:macro>
+
+</robot>

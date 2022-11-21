@@ -1,0 +1,99 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="fellahbot">
+
+    <xacro:include filename="$(find fellahbot_description)/urdf/constants.xacro"/>
+    <xacro:include filename="$(find fellahbot_description)/urdf/inertials.xacro"/>
+    <xacro:include filename="$(find fellahbot_description)/urdf/materials.xacro"/>
+
+        
+    <link name="base_link">
+    
+    </link>
+
+    <joint name="base_robot" type="fixed">
+        <parent link="base_link"/>
+        <child link="chassis"/>
+        <origin rpy="0 0 0" xyz="0 0 0.05"/>
+    </joint>
+
+
+    <link name="chassis">
+        <visual>
+            <geometry>
+                <box size="0.2 .3 .1"/>
+            </geometry>
+            <origin rpy="0 0 0" xyz="0 0 0.05"/>
+            <material name="white"/>
+        </visual>
+    </link>
+
+    <link name="wheel_1">
+        <visual>
+            <geometry>
+                <cylinder length="0.05" radius="0.05"/>
+            </geometry>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 ${math_pi_over_2} 0.0"/>
+           <material name="black"/>
+        </visual>
+    </link>
+
+    <link name="wheel_2">
+        <visual>
+            <geometry>
+                <cylinder length="0.05" radius="0.05"/>
+            </geometry>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 ${math_pi_over_2} 0.0"/>
+            <material name="black"/>
+        </visual>
+    </link>
+
+    <link name="wheel_3">
+        <visual>
+            <geometry>
+                <cylinder length="0.05" radius="0.05"/>
+            </geometry>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 ${math_pi_over_2} 0.0"/>
+            <material name="black"/>
+        </visual>
+    </link>
+
+    <link name="wheel_4">
+        <visual>
+            <geometry>
+                <cylinder length="0.05" radius="0.05"/>
+            </geometry>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 ${math_pi_over_2} 0.0"/>
+            <material name="black"/>
+        </visual>
+    </link>
+
+
+    <joint name="base_to_wheel1" type="continuous">
+        <parent link="chassis"/>
+        <child link="wheel_1"/>
+        <origin rpy="0 0 0" xyz="0.1 0.1 0"/>
+    </joint>
+
+
+    <joint name="base_to_wheel2" type="continuous">
+        <parent link="chassis"/>
+        <child link="wheel_2"/>
+        <origin rpy="0 0 0" xyz="-0.1 0.1 0"/>
+    </joint>
+
+
+    <joint name="base_to_wheel3" type="continuous">
+        <parent link="chassis"/>
+        <child link="wheel_3"/>
+       <origin rpy="0 0 0" xyz="0.1 -0.1 0."/>
+    </joint>
+    
+
+    <joint name="base_to_wheel4" type="continuous">
+        <parent link="chassis"/>
+        <child link="wheel_4"/>
+        <origin rpy="0 0 0" xyz="-0.1 -0.1 0"/>
+    </joint>
+
+
+</robot>

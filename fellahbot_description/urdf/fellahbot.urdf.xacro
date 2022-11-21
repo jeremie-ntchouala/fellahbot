@@ -1,0 +1,202 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="fellahbot">
+
+  <xacro:include filename="$(find fellahbot_description)/urdf/constants.xacro"/>
+  <xacro:include filename="$(find fellahbot_description)/urdf/inertials.xacro"/>
+  <xacro:include filename="$(find fellahbot_description)/urdf/materials.xacro"/>
+  <xacro:include filename="$(find fellahbot_description)/urdf/plugin.gazebo.xacro"/>
+  <xacro:include filename="$(find fellahbot_description)/urdf/wheel.xacro"/>
+
+
+
+  <link name="base_link"/>
+
+  <!-- Chassis link -->
+  <link name="chassis">
+    <visual>
+      <geometry>
+        <mesh filename="package://fellahbot_description/meshes/Fellahbot_DAE/Parts/ChassisRobot-Fusion001.dae"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <material name="silver"/>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="${chassis_length} ${chassis_width} ${chassis_height}"/>
+      </geometry>
+    </collision>
+    <xacro:default_inertial mass="50"/>
+  </link>
+  <joint name="base_robot" type="fixed">
+    <parent link="base_link"/>
+    <child link="chassis"/>
+    <origin rpy="0 0 0" xyz="0 0 0.359"/>
+  </joint>
+
+
+
+  <!-- lidar link -->
+  <link name="lidar">
+    <visual>
+      <geometry>
+        <mesh filename="package://fellahbot_description/meshes/Fellahbot_DAE/Parts/Support_lidar-Body.dae"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+    <collision>
+      <geometry>
+        <mesh filename="package://fellahbot_description/meshes/Fellahbot_DAE/Parts/Support_lidar-Body.dae"/>
+      </geometry>
+    </collision>
+    <xacro:solid_cylinder_inertial rpy="0 0 0" xyz="0.455 0.0 -0.028" mass="0.3" radius="0.04" length="0.06" />
+  </link>
+  <joint name="base_lidar" type="fixed">
+    <parent link="chassis"/>
+    <child link="lidar"/>
+    <origin xyz="0.455 0.0 -0.028"/>
+  </joint>
+
+
+  <!-- camera link -->
+  <link name="camera">
+    <visual>
+      <geometry>
+        <box size="0.01 .06 0.03"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <material name="black"/>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="0.01 .06 0.03"/>
+      </geometry>
+    </collision>
+    <xacro:solid_cuboid_inertial rpy="0 0 0" xyz="0.555 0.0 0.130" mass="0.2" x="0.01" y="0.06" z="0.03" />
+    <xacro:default_inertial mass="0.2"/>
+  </link>
+  <joint name="base_camera" type="fixed">
+    <parent link="chassis"/>
+    <child link="camera"/>
+    <origin xyz="0.555 0.0 0.130"/>
+  </joint>
+
+
+  <!-- Lightning -->
+  <link name="phare">
+    <visual>
+      <geometry>
+        <cylinder radius="0.025" length="0.290"/>
+      </geometry>
+      <origin rpy="${math_pi_over_2} 0 0" xyz="0 0 0"/>
+      <material name="white"/>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder radius="0.03" length="0.3"/>
+      </geometry>
+      <origin rpy="${math_pi_over_2} 0 0" xyz="0 0 0"/>
+    </collision>
+    <xacro:solid_cylinder_inertial rpy="0 0 0" xyz="0.556 0.0 0.27444" mass="0.5" radius="0.025" length="0.29" />
+  </link>
+  <joint name="base_phare" type="fixed">
+    <parent link="chassis"/>
+    <child link="phare"/>
+    <origin xyz="0.556 0.0 0.27444"/>
+  </joint>
+
+
+  <!-- Wheels -->
+  <xacro:front_steer_wheel prefix="left" parent="chassis" reflect="1" />
+
+  <xacro:front_steer_wheel prefix="right" parent="chassis" reflect="-1" />
+
+  <xacro:rear_wheel prefix="left" parent="chassis" reflect="1" />
+
+  <xacro:rear_wheel prefix="right" parent="chassis" reflect="-1" />
+
+
+  <!-- joints for ackermann_steering_controller -->
+  <link name="steer_link">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.05" length="0.03"/>
+      </geometry>
+      <material name="yellow"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.05" length="0.03"/>
+      </geometry>
+      <material name="yellow"/>
+    </collision>
+    <xacro:default_inertial mass="1"/>
+  </link>
+  <joint name="steer_joint" type="revolute">
+    <parent link="chassis"/>
+    <child link="steer_link"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-${math_pi_over_6}" upper="${math_pi_over_6}" velocity="5.0" effort="10.0"/>
+    <origin xyz="0.319 0.0 0.0"/>
+  </joint>
+  <!-- Transmission is important to link the joints and the controller -->
+   <transmission name="steer_joint_trans">
+      <type>transmission_interface/SimpleTransmission</type>
+      <actuator name="steer_joint_motor">
+        <mechanicalReduction>1</mechanicalReduction>
+        <motorTorqueConstant>1.o</motorTorqueConstant>
+        <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      </actuator>
+      <joint name="steer_joint">
+        <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      </joint>
+    </transmission>
+  <gazebo reference="steer_link">
+    <material>Gazebo/Yellow</material>
+  </gazebo>
+
+
+  <link name="wheel_link">
+    <visual>
+      <origin xyz="0 0 0" rpy="${math_pi_over_2} 0 0"/>
+      <geometry>
+        <cylinder radius="0.03" length="0.05"/>
+      </geometry>
+      <material name="yellow"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="${math_pi_over_2} 0 0"/>
+      <geometry>
+        <cylinder radius="0.03" length="0.05"/>
+      </geometry>
+      <material name="yellow"/>
+    </collision>
+    <xacro:default_inertial mass="1"/>
+  </link>
+  <joint name="wheel_joint" type="continuous">
+    <parent link="chassis"/>
+    <child link="wheel_link"/>
+    <origin xyz="-0.335 0.0 -0.192" rpy="0 0 0"/>
+    <limit effort="10" velocity="10"/>
+    <joint_properties damping="0.01" friction="0.0"/>
+  </joint>
+  <!-- Transmission is important to link the joints and the controller -->
+  <transmission name="wheel_transmission">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="wheel_joint">
+      <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="wheel_joint_motor">
+      <mechanicalReduction>1.0</mechanicalReduction>
+      <motorTorqueConstant>1.o</motorTorqueConstant>
+      <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+    </actuator>
+  </transmission>
+  <gazebo reference="wheel_link">
+    <material>Gazebo/Yellow</material>
+  </gazebo>
+
+
+
+</robot>

@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<launch>
+  
+
+  <arg name="model" default="$(find fellahbot_description)/urdf/fellahbot.urdf.xacro"/>
+  <arg name="gui" default="true" />
+
+  <!--Robot Description from URDF-->
+  <param name="robot_description" command="$(find xacro)/xacro --inorder $(arg model)"/>  
+
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"/>
+
+  <node if="$(arg gui)" name="joint_state_publisher" pkg="joint_state_publisher_gui" type="joint_state_publisher_gui" />
+  <node unless="$(arg gui)" name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" />
+
+  <!--RViz-->
+  <node type="rviz" name="fellahbot_rviz" pkg="rviz" args="-d $(find fellahbot_description)/rviz/fellahbot_view_model.rviz" />
+
+</launch>
