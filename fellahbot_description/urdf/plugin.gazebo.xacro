@@ -85,7 +85,7 @@
   </gazebo>
 
 
-  <gazebo reference="imu_sensor">
+  <gazebo reference="imu_link">
     <gravity>true</gravity>
     <sensor name="imu_sensor" type="imu">
       <always_on>true</always_on>
