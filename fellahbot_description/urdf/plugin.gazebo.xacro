@@ -4,19 +4,17 @@
   <xacro:include filename="$(find fellahbot_description)/urdf/constants.xacro"/>
   <xacro:include filename="$(find fellahbot_description)/urdf/inertials.xacro"/>
 
-   <xacro:property name="robot_namespace" value="/test1"/>
+  <xacro:property name="robot_namespace" value="/test1"/>
 
 
   <!-- ros control plugin -->
-  <xacro:macro name="ros_control">
-    <gazebo>
-      <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
-        <robotNamespace>${robot_namespace}</robotNamespace>
-        <robotSimType>steer_bot_hardware_gazebo/SteerBotHardwareGazebo</robotSimType>
-        <legacyModeNS>false</legacyModeNS>
-      </plugin>
-    </gazebo>
-  </xacro:macro>
+  <gazebo>
+    <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+      <robotNamespace>${robot_namespace}</robotNamespace>
+      <robotSimType>steer_bot_hardware_gazebo/SteerBotHardwareGazebo</robotSimType>
+      <legacyModeNS>false</legacyModeNS>
+    </plugin>
+  </gazebo>
 
 
   <gazebo reference="camera">
@@ -54,7 +52,7 @@
 
 
   <!-- RpLidar A2 using CPU -->
-  <gazebo reference="lidar">
+  <gazebo reference="laser">
     <sensor type="ray" name="rplidar_sensor">
       <pose>0.0 0.0 0.0 0 0 0</pose>
       <visualize>true</visualize>
@@ -81,19 +79,19 @@
       </ray>
       <plugin name="gazebo_ros_head_rplidar_controller" filename="libgazebo_ros_laser.so">
         <topicName>scan</topicName>
-        <frameName>lidar</frameName>
+        <frameName>laser</frameName>
       </plugin>
     </sensor>
   </gazebo>
 
 
-  <gazebo reference="top">
+  <gazebo reference="imu_sensor">
     <gravity>true</gravity>
     <sensor name="imu_sensor" type="imu">
       <always_on>true</always_on>
       <update_rate>10</update_rate>
       <visualize>true</visualize>
-      <topic>imu</topic>
+      <topic>imu_data</topic>
       <plugin filename="libgazebo_ros_imu_sensor.so" name="imu_plugin">
         <topicName>imu</topicName>
         <bodyName>imu_link</bodyName>

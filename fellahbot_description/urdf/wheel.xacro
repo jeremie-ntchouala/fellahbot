@@ -43,7 +43,7 @@
             </joint>
             <actuator name="front_${prefix}_steer_motor">
                 <mechanicalReduction>1.0</mechanicalReduction>
-                <motorTorqueConstant>1.o</motorTorqueConstant>
+                <motorTorqueConstant>1.0</motorTorqueConstant>
                 <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
             </actuator>
         </transmission>
@@ -85,7 +85,7 @@
             </joint>
             <actuator name="front_${prefix}_motor">
                 <mechanicalReduction>1.0</mechanicalReduction>
-                <motorTorqueConstant>1.o</motorTorqueConstant>
+                <motorTorqueConstant>1.0</motorTorqueConstant>
                 <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
             </actuator>
         </transmission>
@@ -138,7 +138,7 @@
             </joint>
             <actuator name="rear_${prefix}_motor">
                 <mechanicalReduction>1.0</mechanicalReduction>
-                <motorTorqueConstant>1.o</motorTorqueConstant>
+                <motorTorqueConstant>1.0</motorTorqueConstant>
                 <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
             </actuator>
         </transmission>

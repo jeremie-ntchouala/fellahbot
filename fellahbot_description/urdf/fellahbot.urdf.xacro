@@ -36,7 +36,7 @@
 
 
   <!-- lidar link -->
-  <link name="lidar">
+  <link name="laser">
     <visual>
       <geometry>
         <mesh filename="package://fellahbot_description/meshes/Fellahbot_DAE/Parts/Support_lidar-Body.dae"/>
@@ -52,7 +52,7 @@
   </link>
   <joint name="base_lidar" type="fixed">
     <parent link="chassis"/>
-    <child link="lidar"/>
+    <child link="laser"/>
     <origin xyz="0.455 0.0 -0.028"/>
   </joint>
 
@@ -144,8 +144,8 @@
    <transmission name="steer_joint_trans">
       <type>transmission_interface/SimpleTransmission</type>
       <actuator name="steer_joint_motor">
-        <mechanicalReduction>1</mechanicalReduction>
-        <motorTorqueConstant>1.o</motorTorqueConstant>
+        <mechanicalReduction>1.0</mechanicalReduction>
+        <motorTorqueConstant>1.0</motorTorqueConstant>
         <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
       </actuator>
       <joint name="steer_joint">
@@ -189,7 +189,7 @@
     </joint>
     <actuator name="wheel_joint_motor">
       <mechanicalReduction>1.0</mechanicalReduction>
-      <motorTorqueConstant>1.o</motorTorqueConstant>
+      <motorTorqueConstant>1.0</motorTorqueConstant>
       <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
     </actuator>
   </transmission>
