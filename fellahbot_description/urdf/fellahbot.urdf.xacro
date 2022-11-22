@@ -74,10 +74,33 @@
     <xacro:solid_cuboid_inertial rpy="0 0 0" xyz="0.555 0.0 0.130" mass="0.2" x="0.01" y="0.06" z="0.03" />
     <xacro:default_inertial mass="0.2"/>
   </link>
-  <joint name="base_camera" type="fixed">
+  <joint name="base_camera_sensor" type="fixed">
     <parent link="chassis"/>
     <child link="camera"/>
     <origin xyz="0.555 0.0 0.130"/>
+  </joint>
+
+  <!-- camera link -->
+  <link name="imu_link">
+    <visual>
+      <geometry>
+        <box size="0.06 .03 0.01"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <material name="blue"/>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="0.06 .03 0.01"/>
+      </geometry>
+    </collision>
+    <xacro:solid_cuboid_inertial rpy="0 0 0" xyz="0.319 0.0 0.130" mass="0.2" x="0.06" y="0.03" z="0.01" />
+    <xacro:default_inertial mass="0.02"/>
+  </link>
+  <joint name="base_imu_sensor" type="fixed">
+    <parent link="chassis"/>
+    <child link="imu_link"/>
+    <origin xyz="0.319 0.0 0.130"/>
   </joint>
 
 
