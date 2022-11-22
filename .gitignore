@@ -4,11 +4,11 @@
 .vscode/c_cpp_properties.json
 .vscode/settings.json
 
-# fellahbot_description/urdf/test
-# fellahbot_description/urdf/test_2
-# fellahbot_description/urdf/test_3
-# fellahbot_description/urdf/version_1
-# fellahbot_description/urdf/version_2
+fellahbot_description/urdf/test
+fellahbot_description/urdf/test_2
+fellahbot_description/urdf/test_3
+fellahbot_description/urdf/version_1
+fellahbot_description/urdf/version_2
 # fellahbot_description/meshes/Fellahbot_DAE
 # fellahbot_description/meshes/Fellahbot_STL
 fellahbot_ackermann
