@@ -41,11 +41,11 @@
         <cameraInfoTopicName>camera_info</cameraInfoTopicName>
         <frameName>camera</frameName>
         <hackBaseline>0.07</hackBaseline>
-        <distortionK1>0.0</distortionK1>
-        <distortionK2>0.0</distortionK2>
+        <distortionK1>0.03893514760673483</distortionK1>
+        <distortionK2>-0.09751099987750267</distortionK2>
         <distortionK3>0.0</distortionK3>
-        <distortionT1>0.0</distortionT1>
-        <distortionT2>0.0</distortionT2>
+        <distortionT1>0.008984949010974788</distortionT1>
+        <distortionT2>0.001912089944467355</distortionT2>
       </plugin>
     </sensor>
   </gazebo>
@@ -55,7 +55,7 @@
   <gazebo reference="laser">
     <sensor type="ray" name="rplidar_sensor">
       <pose>0.0 0.0 0.0 0 0 0</pose>
-      <visualize>true</visualize>
+      <visualize>false</visualize>
       <update_rate>10</update_rate>
       <ray>
         <scan>
