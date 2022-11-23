@@ -13,6 +13,14 @@ from __future__ import division
 import sys
 
 
+import rospy
+from modules.following_driver import FollowingDriver
+from std_msgs.msg import Int32
+from std_srvs.srv import Trigger
+from diagnostic_msgs.msg import DiagnosticStatus
+from diagnostic_msgs.msg import KeyValue
+
+
 def main(args):
     pass
 
