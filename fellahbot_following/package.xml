@@ -5,27 +5,30 @@
   <description>The fellahbot_following package</description>
 
   <!-- One maintainer tag required, multiple allowed, one person per tag -->
+  <!-- One maintainer tag required, multiple allowed, one person per tag -->
   <!-- Example:  -->
   <!-- <maintainer email="jane.doe@example.com">Jane Doe</maintainer> -->
-  <maintainer email="jeremie@todo.todo">jeremie</maintainer>
+  <maintainer email="support@fellahtech.com">FellahTech Sarl</maintainer>
+  <maintainer email="jeremie.ntchouala@fellahtech.com">Ntchouala Jeremie</maintainer>
 
 
   <!-- One license tag required, multiple allowed, one license per tag -->
   <!-- Commonly used license strings: -->
   <!--   BSD, MIT, Boost Software License, GPLv2, GPLv3, LGPLv2.1, LGPLv3 -->
-  <license>TODO</license>
+  <license>BSD 3-Clause License</license>
 
 
   <!-- Url tags are optional, but multiple are allowed, one per tag -->
   <!-- Optional attribute type can be: website, bugtracker, or repository -->
   <!-- Example: -->
-  <!-- <url type="website">http://wiki.ros.org/fellahbot_following</url> -->
+  <!-- <url type="website">http://wiki.ros.org/fellahbot_description</url> -->
 
 
   <!-- Author tags are optional, multiple are allowed, one per tag -->
   <!-- Authors do not have to be maintainers, but could be -->
   <!-- Example: -->
   <!-- <author email="jane.doe@example.com">Jane Doe</author> -->
+  <author email="jeremie.ntchouala@fellahtech.com">Ntchouala Jeremie</author>
 
 
   <!-- The *depend tags are used to specify dependencies -->

@@ -11,6 +11,7 @@ from __future__ import print_function
 from __future__ import division
 
 import sys
+import rospy
 
 
 class FollowingDriver:
@@ -30,7 +31,7 @@ class FollowingDriver:
         """
         Close communication, and destroy all settings, ...
         """
-        print("closing")
+        rospy.loginfo("Deleting the following driver object")
 
     def set_speed(self, speed):
         """
@@ -56,7 +57,7 @@ class FollowingDriver:
         """
         self.current_speed = 0
         self.current_steering = 0
-        print("STOP")
+        rospy.loginfo("Stopping the driver controller")
 
     def get_speed(self):
         """
@@ -84,7 +85,12 @@ class FollowingDriver:
 
 def main(args):
     test = FollowingDriver()
-    print(test.get_status())
+    rospy.loginfo(test.get_status())
+    try:
+        rospy.spin()
+
+    except:
+        print("error")
 
 
 if __name__ == '__main__':
