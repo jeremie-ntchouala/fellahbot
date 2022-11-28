@@ -15,6 +15,8 @@ import sys
 
 import rospy
 import cv2
+import imutils
+
 from fellahbot_following.following_driver import FollowingDriver
 from cv_bridge import CvBridge, CvBridgeError
 from geometry_msgs.msg import Twist
@@ -28,17 +30,18 @@ from diagnostic_msgs.msg import KeyValue
 class FollowingDriverROSWrapper:
     def __init__(self):
 
-        self.bridge = CvBridge() # Creating an Instance of CV Bridge
-        self.image_sub =rospy.Subscriber("/test1/camera1/image_raw",Image,self.image_callback)  # Subsciber for the Image feed
-        self.pub = rospy.Publisher('/cmd_vel', Twist, queue_size=10)                            # Publisher to publish the velocities
-        self.velocity_msg = Twist()                                                             # Creating a messgae from the Twist template  
-        
+        self.bridge = CvBridge()                                                                            # Creating an Instance of CV Bridge
+        self.velocity_msg = Twist()                                                                         # Creating a messgae from the Twist template
+        self.image_sub =rospy.Subscriber("/test1/camera1/image_raw",Image,self.image_callback)              # Subsciber for the Image feed
+        self.pub = rospy.Publisher('test1/ackermann_steering_controller/cmd_vel', Twist, queue_size=10)     # Publisher to publish the velocities
+                                                                     
 
         max_speed = rospy.get_param("~max_speed", 8)
         publish_current_speed_frequency = rospy.get_param("~publish_current_speed_frequency", 5.0)
         publish_motor_status_frequency = rospy.get_param("~publish_following_status_frequency", 1.0)
 
         self.controller = FollowingDriver(max_speed=max_speed)
+        
         rospy.Subscriber("speed_command", Int32, self.callback_speed_command)
         rospy.Service("stop_following", Trigger, self.callback_stop)
 
