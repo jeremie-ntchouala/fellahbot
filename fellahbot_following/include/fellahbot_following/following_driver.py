@@ -24,8 +24,8 @@ class FollowingDriver:
         self.current_speed = 0
         self.current_steering = 0
 
-        self.voltage = 12
-        self.temperature = 47
+        self.voltage = 48
+        self.temperature = 37
 
     def __del__(self):
         """
@@ -78,8 +78,10 @@ class FollowingDriver:
         return {
             'temperature': self.temperature,
             'voltage': self.voltage,
-            'speed': self.get_speed(),
-            'steering': self.get_steering(),
+            'max_speed': self.max_speed,
+            'max_steering': self.max_steering,
+            'current_speed': self.get_speed(),
+            'current_steering': self.get_steering(),
         }
 
 
