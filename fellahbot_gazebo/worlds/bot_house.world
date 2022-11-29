@@ -103,10 +103,10 @@
         </link>
       </model>
       <model name='green_cube_1'>
-        <pose>2.74742 1.89323 0.145534 0 -0 0</pose>
+        <pose>4 1.1 0.145534 0 -0 0</pose>
         <scale>1 1 1</scale>
         <link name='link'>
-          <pose>2.74742 1.89323 0.145534 0 -0 0</pose>
+          <pose>4 1.1 0.145534 0 -0 0</pose>
           <velocity>0 0 0 0 -0 0</velocity>
           <acceleration>0 0 0 0 -0 0</acceleration>
           <wrench>0 0 0 0 -0 0</wrench>
