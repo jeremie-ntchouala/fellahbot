@@ -15,11 +15,11 @@
 
 
     <arg name="world_name" value="worlds/empty_world" />
-    <arg name="world_name_1" value="$(find object_follower_sim)/worlds/bot_world.world" />
+    <arg name="world_name_1" value="$(find fellahbot_gazebo)/worlds/bot_house.world" />
     <arg name="cmd_timeout" value="0.5"/>
     <arg name="x" value="0.0"/>
     <arg name="y" value="0.0"/>
-    <arg name="z" value="0.0" />
+    <arg name="z" value="0.01" />
     <arg name="roll" value="0.0"/>
     <arg name="pitch" value="0.0"/>
     <arg name="yaw" value="0.0"/>
