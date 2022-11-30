@@ -17,6 +17,7 @@ import cv2
 import imutils
 
 from fellahbot_following.following_driver import FollowingDriver
+from fellahbot_following.image_processing import ImageProcessing
 from cv_bridge import CvBridge, CvBridgeError
 from geometry_msgs.msg import Twist
 from std_msgs.msg import Int32
@@ -37,6 +38,7 @@ class FollowingDriverROSWrapper:
         self._init_controller_publisher()
 
     def _init_data_varaible(self, ):
+        self.cv_image = None
         self.max_speed = 0
         self.publish_current_speed_frequency = 0
         self.publish_motor_status_frequency = 0
@@ -58,20 +60,35 @@ class FollowingDriverROSWrapper:
 
     def _init_camera_feed(self, ):
         self.bridge = CvBridge()  # Creating an Instance of CV Bridge
-        self.image_sub = rospy.Subscriber("/test1/camera1/image_raw", Image,
-                                          self.image_callback)  # Subsciber for the Image feed
+        self.image_sub = rospy.Subscriber("/test1/camera1/image_raw", Image, self.image_callback)  # Subsciber for the Image feed
 
     def _init_controller_publisher(self, ):
         self.velocity_msg = Twist()  # Creating a messgae from the Twist template
-        self.pub = rospy.Publisher('test1/ackermann_steering_controller/cmd_vel', Twist,
-                                   queue_size=10)  # Publisher to publish the velocities
+        self.pub = rospy.Publisher('test1/ackermann_steering_controller/cmd_vel', Twist, queue_size=10)  # Publisher to publish the velocities
 
     def image_callback(self, data):
         try:
             self.cv_image = self.bridge.imgmsg_to_cv2(data, "bgr8")
+            self.control_loop() 
         except CvBridgeError as e:
             print(e)
             self.controller.stop()
+
+    def control_loop(self, ):
+        # Creating an object of the class Image processing to process the incoming image
+        sc = ImageProcessing()
+        # process Image to detect object in the image
+        result = sc.process_image(self.cv_image)
+        x_length = result[0].shape[1]
+        x = int(x_length/2)    # Center of the image
+        print(result[2])
+        # Showing the Original Frame and the Masked Frame
+        cv2.imshow("Frame", result[0])
+        mask3 = cv2.cvtColor(result[1], cv2.COLOR_GRAY2BGR)
+        im_thresh_color = cv2.bitwise_and(result[0], mask3)
+        cv2.line(im_thresh_color, (x, 0), (x, result[0].shape[1]), (255, 0, 0), 2)
+        cv2.imshow("Mask", im_thresh_color)
+        cv2.waitKey(1)
 
     def publish_current_speed(self, event=None):
         self.current_speed_pub.publish(self.controller.get_speed())

@@ -12,6 +12,7 @@ from __future__ import division
 
 import sys
 import rospy
+from fellahbot_following.controller_PID import ControllerPID
 
 
 class FollowingDriver:

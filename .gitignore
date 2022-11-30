@@ -13,4 +13,5 @@ fellahbot_description/urdf/version_2
 # fellahbot_description/meshes/Fellahbot_STL
 fellahbot_ackermann
 fellahbot_gazebo/models
-fellahbot_following/include/fellahbot_following/__pycache__/following_driver.cpython-38.pyc
+fellahbot_following/include/fellahbot_following/__pycache__
+fellahbot_following/scripts/camera_node.py
