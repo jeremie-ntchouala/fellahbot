@@ -14,7 +14,6 @@ import sys
 
 import rospy
 import cv2
-import imutils
 
 from fellahbot_following.following_driver import FollowingDriver
 from fellahbot_following.image_processing import ImageProcessing
@@ -69,7 +68,8 @@ class FollowingDriverROSWrapper:
     def image_callback(self, data):
         try:
             self.cv_image = self.bridge.imgmsg_to_cv2(data, "bgr8")
-            self.control_loop() 
+            # self.controller.compute_control(self.cv_image) 
+            self.control_loop()
         except CvBridgeError as e:
             print(e)
             self.controller.stop()
@@ -81,7 +81,9 @@ class FollowingDriverROSWrapper:
         result = sc.process_image(self.cv_image)
         x_length = result[0].shape[1]
         x = int(x_length/2)    # Center of the image
-        print(result[2])
+        # print(result[2])
+        print('bounding box v1 : ', result[5])
+        print('bounding box area : ', result[5][2] * result[5][3])
         # Showing the Original Frame and the Masked Frame
         cv2.imshow("Frame", result[0])
         mask3 = cv2.cvtColor(result[1], cv2.COLOR_GRAY2BGR)

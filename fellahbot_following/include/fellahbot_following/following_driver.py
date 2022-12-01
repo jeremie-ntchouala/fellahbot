@@ -13,6 +13,7 @@ from __future__ import division
 import sys
 import rospy
 from fellahbot_following.controller_PID import ControllerPID
+from fellahbot_following.image_processing import ImageProcessing
 
 
 class FollowingDriver:
@@ -20,19 +21,32 @@ class FollowingDriver:
         """
         Init communication, set default settings, ...
         """
-        self.max_steering = max_steering
         self.max_speed = max_speed
+        self.max_steering = max_steering
         self.current_speed = 0
         self.current_steering = 0
 
         self.voltage = 48
         self.temperature = 37
+        self.target_area = 25000
+        self.target_center = 320
+        self.PID_controller = ControllerPID([self.target_area, self.target_center], [
+                                            0.0000045, 0.002], [0, 0], [0.000001, 0.001])
 
     def __del__(self):
         """
         Close communication, and destroy all settings, ...
         """
         rospy.loginfo("Deleting the following driver object")
+
+    def compute_control(self, frame):
+        # Creating an object of the class Image processing to process the incoming image
+        sc = ImageProcessing()
+        # process Image to detect object in the image
+        result = sc.process_image(self.cv_image)
+        x_length = result[0].shape[1]
+        x = int(x_length/2)    # Center of the image
+        print(result[2])
 
     def set_speed(self, speed):
         """
@@ -83,6 +97,9 @@ class FollowingDriver:
             'max_steering': self.max_steering,
             'current_speed': self.get_speed(),
             'current_steering': self.get_steering(),
+            'target_center':  self.target_area,
+            'target_center': self.target_center,
+
         }
 
 

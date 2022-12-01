@@ -43,6 +43,12 @@ class ControllerPID:
         self.last_error = 0
         self.integrator = 0
         self.timeOfLastCall = None
+    
+    def __del__(self):
+        """
+        Close communication, and destroy all settings, ...
+        """
+        rospy.loginfo("Deleting the controller PID object")
 
     def update(self, current_value):
         """
