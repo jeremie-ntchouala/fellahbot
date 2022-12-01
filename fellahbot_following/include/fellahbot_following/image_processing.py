@@ -73,7 +73,7 @@ class ImageProcessing:
                 cv2.rectangle(frame, (bbox[0], bbox[1]), ((bbox[0]+bbox[2]),(bbox[1]+bbox[3])), (255, 0, 255), 1)
                 
 
-        return [frame, mask, self.center, self.radius, c, bbox, box]
+        return [frame, mask, self.center, self.radius, bbox, box]
 
 
 def main(args):
@@ -86,9 +86,9 @@ def main(args):
     cv2.waitKey(1)
     print('center ', result[2])
     print('radius ', result[3])
-    print('bounding box v1 ', result[5])
+    print('bounding box v1 ', result[4])
     print(result[0].shape)
-    print('bounding box v2', result[6])
+    print('bounding box v2', result[5])
 
     if (cv2.waitKey(1) & 0xFF) == ord('q'):
         pass

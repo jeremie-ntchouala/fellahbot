@@ -154,13 +154,13 @@
       </geometry>
       <material name="yellow"/>
     </collision>
-    <xacro:default_inertial mass="1"/>
+    <xacro:solid_cylinder_inertial rpy="0 0 0" xyz="0.319 0.0 0.0" mass="1" radius="0.05" length="0.03" />
   </link>
   <joint name="steer_joint" type="revolute">
     <parent link="chassis"/>
     <child link="steer_link"/>
     <axis xyz="0 0 1"/>
-    <limit lower="-${math_pi_over_6}" upper="${math_pi_over_6}" velocity="5.0" effort="10.0"/>
+    <limit lower="-${math_pi_over_6}" upper="${math_pi_over_6}" velocity="25.0" effort="50.0"/>
     <origin xyz="0.319 0.0 0.0"/>
   </joint>
   <!-- Transmission is important to link the joints and the controller -->
@@ -195,14 +195,14 @@
       </geometry>
       <material name="yellow"/>
     </collision>
-    <xacro:default_inertial mass="1"/>
+    <xacro:solid_cylinder_inertial rpy="0 0 0" xyz="-0.335 0.0 -0.192" mass="1" radius="0.03" length="0.05" />
   </link>
   <joint name="wheel_joint" type="continuous">
     <parent link="chassis"/>
     <child link="wheel_link"/>
     <origin xyz="-0.335 0.0 -0.192" rpy="0 0 0"/>
-    <limit effort="10" velocity="10"/>
-    <joint_properties damping="0.01" friction="0.0"/>
+    <limit effort="150" velocity="20"/>
+    <joint_properties damping="0.2" friction="0.8"/>
   </joint>
   <!-- Transmission is important to link the joints and the controller -->
   <transmission name="wheel_transmission">

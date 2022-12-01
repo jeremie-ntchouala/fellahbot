@@ -82,8 +82,8 @@ class FollowingDriverROSWrapper:
         x_length = result[0].shape[1]
         x = int(x_length/2)    # Center of the image
         # print(result[2])
-        print('bounding box v1 : ', result[5])
-        print('bounding box area : ', result[5][2] * result[5][3])
+        print('bounding box v1 : ', result[4])
+        print('bounding box area : ', result[4][2] * result[4][3])
         # Showing the Original Frame and the Masked Frame
         cv2.imshow("Frame", result[0])
         mask3 = cv2.cvtColor(result[1], cv2.COLOR_GRAY2BGR)

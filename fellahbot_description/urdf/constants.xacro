@@ -10,6 +10,7 @@
 
 	<!-- Chassis properties -->
 	<xacro:property name="chassis_height" value="0.311"/>
+	<!--xacro:property name="chassis_height" value="0.470"/-->
 	<!--xacro:property name="chassis_height" value="0.411"/-->
 	<xacro:property name="chassis_length" value="1.150"/>
 	<xacro:property name="chassis_width" value="0.632"/>
