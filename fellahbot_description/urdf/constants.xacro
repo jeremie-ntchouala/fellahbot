@@ -6,7 +6,8 @@
 	<xacro:property name="math_pi" value="3.141592653589793" />
 	<xacro:property name="math_pi_over_2" value="1.5707963267948966" />
 	<xacro:property name="math_pi_over_4" value="0.785398163397448" />
-	<xacro:property name="math_pi_over_6" value="${(PI/(6.0))}" />
+	<xacro:property name="math_pi_over_6" value="${(math_pi/(6.0))}" />
+	<xacro:property name="math_pi_over_6_29" value="0.51" />
 
 	<!-- Chassis properties -->
 	<xacro:property name="chassis_height" value="0.311"/>

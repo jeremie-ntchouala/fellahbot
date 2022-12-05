@@ -31,7 +31,7 @@
             <parent link="${parent}"/>
             <child link="front_${prefix}_steer"/>
             <axis xyz="0 0 1"/>
-            <limit lower="-${math_pi_over_6}" upper="${math_pi_over_6}" velocity="25.0" effort="50"/>
+            <limit lower="${-math_pi_over_6_29}" upper="${math_pi_over_6}" velocity="50.0" effort="100"/>
             <origin xyz="0.319 ${(reflect * 0.175)} 0.0"/>
         </joint>
 
@@ -39,12 +39,12 @@
         <transmission name="front_${prefix}_steer_transmission">
             <type>transmission_interface/SimpleTransmission</type>
             <joint name="front_${prefix}_steer_joint">
-                <hardwareInterface>PositionJointInterface</hardwareInterface>
+                <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
             </joint>
             <actuator name="front_${prefix}_steer_motor">
                 <mechanicalReduction>1.0</mechanicalReduction>
                 <motorTorqueConstant>1.0</motorTorqueConstant>
-                <hardwareInterface>PositionJointInterface</hardwareInterface>
+                <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
             </actuator>
         </transmission>
 
@@ -73,7 +73,7 @@
             <axis xyz="0 1 0"/>
             <origin xyz="0.0 0.0 -0.192" rpy="0 0 0"/>
             <limit effort="150" velocity="20"/>
-            <joint_properties damping="0.2" friction="0.8"/>
+            <joint_properties damping="1.0" friction="1.0"/>
         </joint>
 
 
@@ -81,14 +81,23 @@
         <transmission name="front_${prefix}_wheel_transmission">
             <type>transmission_interface/SimpleTransmission</type>
             <joint name="front_${prefix}_wheel_joint">
-                <hardwareInterface>VelocityJointInterface</hardwareInterface>
+                <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
             </joint>
             <actuator name="front_${prefix}_motor">
                 <mechanicalReduction>1.0</mechanicalReduction>
                 <motorTorqueConstant>1.0</motorTorqueConstant>
-                <hardwareInterface>VelocityJointInterface</hardwareInterface>
+                <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
             </actuator>
         </transmission>
+
+
+        <gazebo reference="front_${prefix}_wheel">
+            <mu1 value="1.0"/>
+			<mu2 value="1.0"/>
+			<kp value="10000000.0" />
+			<kd value="1.0" />
+			<fdir1 value="1 0 0"/>
+        </gazebo>
 
 
     </xacro:macro>
@@ -127,21 +136,29 @@
             <axis xyz="0 1 0"/>
             <origin xyz="-0.335 ${(reflect * 0.17523)} -0.192" rpy="0 0 0"/>
             <limit effort="150" velocity="20"/>
-            <joint_properties damping="0.2" friction="0.8"/>
+            <joint_properties damping="1.0" friction="1.0"/>
         </joint>
 
 
         <transmission name="rear_${prefix}_wheel_transmission">
             <type>transmission_interface/SimpleTransmission</type>
             <joint name="rear_${prefix}_wheel_joint">
-                <hardwareInterface>VelocityJointInterface</hardwareInterface>
+                <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
             </joint>
             <actuator name="rear_${prefix}_motor">
                 <mechanicalReduction>1.0</mechanicalReduction>
                 <motorTorqueConstant>1.0</motorTorqueConstant>
-                <hardwareInterface>VelocityJointInterface</hardwareInterface>
+                <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
             </actuator>
         </transmission>
+
+        <gazebo reference="rear_${prefix}_wheel">
+            <mu1 value="1.0"/>
+			<mu2 value="1.0"/>
+			<kp value="10000000.0" />
+			<kd value="1.0" />
+			<fdir1 value="1 0 0"/>
+        </gazebo>
 
 
     </xacro:macro>

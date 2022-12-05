@@ -65,7 +65,7 @@
         <node name="fellahbot_spawner" pkg="gazebo_ros" type="spawn_model" args="-urdf 
                     -model fellahbot 
                     -param robot_description
-                    -gazebo_namespace /$(arg arg_name)/gazebo
+                    -gazebo_namespace $(arg arg_name)/gazebo
                     -x $(arg x) -y $(arg y) -z $(arg z)
                     -R $(arg roll) -P $(arg pitch) -Y $(arg yaw)" respawn="false" output="screen" />
 

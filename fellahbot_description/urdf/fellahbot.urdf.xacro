@@ -25,7 +25,7 @@
         <box size="${chassis_length} ${chassis_width} ${chassis_height}"/>
       </geometry>
     </collision>
-    <xacro:default_inertial mass="50"/>
+    <xacro:solid_cuboid_inertial rpy="0 0 0" xyz="0.0 0.0 0.359" mass="${chassis_mass}" x="${chassis_length}" y="${chassis_width}" z="0.411" />
   </link>
   <joint name="base_robot" type="fixed">
     <parent link="base_link"/>
@@ -154,29 +154,34 @@
       </geometry>
       <material name="yellow"/>
     </collision>
-    <xacro:solid_cylinder_inertial rpy="0 0 0" xyz="0.319 0.0 0.0" mass="1" radius="0.05" length="0.03" />
+    <xacro:solid_cylinder_inertial rpy="0 0 0" xyz="0.319 0.0 0.0" mass="6" radius="0.05" length="0.03" />
   </link>
   <joint name="steer_joint" type="revolute">
     <parent link="chassis"/>
     <child link="steer_link"/>
     <axis xyz="0 0 1"/>
-    <limit lower="-${math_pi_over_6}" upper="${math_pi_over_6}" velocity="25.0" effort="50.0"/>
+    <limit lower="${-math_pi_over_6_29}" upper="${math_pi_over_6}" velocity="50.0" effort="100.0"/>
     <origin xyz="0.319 0.0 0.0"/>
   </joint>
   <!-- Transmission is important to link the joints and the controller -->
-   <transmission name="steer_joint_trans">
-      <type>transmission_interface/SimpleTransmission</type>
-      <actuator name="steer_joint_motor">
-        <mechanicalReduction>1.0</mechanicalReduction>
-        <motorTorqueConstant>1.0</motorTorqueConstant>
-        <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
-      </actuator>
-      <joint name="steer_joint">
-        <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
-      </joint>
-    </transmission>
+  <transmission name="steer_joint_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <actuator name="steer_joint_motor">
+      <mechanicalReduction>1.0</mechanicalReduction>
+      <motorTorqueConstant>1.0</motorTorqueConstant>
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+    </actuator>
+    <joint name="steer_joint">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+    </joint>
+  </transmission>
   <gazebo reference="steer_link">
     <material>Gazebo/Yellow</material>
+    <mu1 value="1.0"/>
+    <mu2 value="1.0"/>
+    <kp value="10000000.0" />
+    <kd value="1.0" />
+    <fdir1 value="1 0 0"/>
   </gazebo>
 
 
@@ -195,14 +200,14 @@
       </geometry>
       <material name="yellow"/>
     </collision>
-    <xacro:solid_cylinder_inertial rpy="0 0 0" xyz="-0.335 0.0 -0.192" mass="1" radius="0.03" length="0.05" />
+    <xacro:solid_cylinder_inertial rpy="0 0 0" xyz="-0.335 0.0 -0.192" mass="6" radius="0.03" length="0.05" />
   </link>
   <joint name="wheel_joint" type="continuous">
     <parent link="chassis"/>
     <child link="wheel_link"/>
     <origin xyz="-0.335 0.0 -0.192" rpy="0 0 0"/>
     <limit effort="150" velocity="20"/>
-    <joint_properties damping="0.2" friction="0.8"/>
+    <joint_properties damping="1.0" friction="1.0"/>
   </joint>
   <!-- Transmission is important to link the joints and the controller -->
   <transmission name="wheel_transmission">
@@ -218,6 +223,11 @@
   </transmission>
   <gazebo reference="wheel_link">
     <material>Gazebo/Yellow</material>
+    <mu1 value="1.0"/>
+    <mu2 value="1.0"/>
+    <kp value="10000000.0" />
+    <kd value="1.0" />
+    <fdir1 value="1 0 0"/>
   </gazebo>
 
 
