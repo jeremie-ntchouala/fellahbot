@@ -3,16 +3,12 @@
 
     <xacro:include filename="$(find fellahbot_description)/urdf/constants.xacro"/>
     <xacro:include filename="$(find fellahbot_description)/urdf/inertials.xacro"/>
+    <xacro:include filename="$(find fellahbot_description)/urdf/transmission.xacro"/>
 
 
     <xacro:macro name="front_steer_wheel" params="prefix parent reflect ">
 
-        <xacro:property name="pos_x_joint" value="${((chassis_length / 2)- wheel_radius)}"/>
-        <xacro:property name="pos_y_joint" value="${((chassis_width / 2) - (wheel_width / 2))}"/>
-        <xacro:property name="pos_z_joint" value="-${chassis_to_ground - wheel_radius}"/>
-
-
-        <link name="front_${prefix}_steer">
+        <link name="${prefix}_steer">
             <visual>
                 <geometry>
                     <mesh filename="package://fellahbot_description/meshes/Fellahbot_DAE/Parts/Caster_Part-Body.dae"/>
@@ -24,33 +20,24 @@
                     <mesh filename="package://fellahbot_description/meshes/Fellahbot_DAE/Parts/Caster_Part-Body.dae"/>
                 </geometry>
             </collision>
-            <xacro:default_inertial mass="6"/>
+            <xacro:solid_cylinder_inertial rpy="0 0 0" xyz="0.0 0.0 0.0" mass="6" radius="0.085" length="0.215" />
         </link>
 
-        <joint name="front_${prefix}_steer_joint" type="revolute">
+
+        <joint name="${prefix}_steer_joint" type="revolute">
             <parent link="${parent}"/>
-            <child link="front_${prefix}_steer"/>
+            <child link="${prefix}_steer"/>
             <axis xyz="0 0 1"/>
-            <limit lower="${-math_pi_over_6_29}" upper="${math_pi_over_6}" velocity="50.0" effort="100"/>
+            <limit lower="${-1.0 * math_pi_over_6}" upper="${math_pi_over_6}" velocity="5.0" effort="100"/>
             <origin xyz="0.319 ${(reflect * 0.175)} 0.0"/>
+            <dynamics damping="0.7" friction="0.7"/>
         </joint>
 
 
-        <transmission name="front_${prefix}_steer_transmission">
-            <type>transmission_interface/SimpleTransmission</type>
-            <joint name="front_${prefix}_steer_joint">
-                <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
-            </joint>
-            <actuator name="front_${prefix}_steer_motor">
-                <mechanicalReduction>1.0</mechanicalReduction>
-                <motorTorqueConstant>1.0</motorTorqueConstant>
-                <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
-            </actuator>
-        </transmission>
+        <xacro:transmission_steer prefix="${prefix}" />
 
 
-
-        <link name="front_${prefix}_wheel">
+        <link name="${prefix}_wheel">
             <visual>
                 <geometry>
                     <mesh filename="package://fellahbot_description/meshes/Fellahbot_DAE/Parts/Geared_Hub_Motor-Fusion001.dae"/>
@@ -62,41 +49,26 @@
                     <mesh filename="package://fellahbot_description/meshes/Fellahbot_DAE/Parts/Geared_Hub_Motor-Fusion001.dae"/>
                 </geometry>
             </collision>
-            <xacro:solid_cylinder_inertial rpy="0 0 0" xyz="0.0 0.0 -0.192" mass="${wheel_mass}" radius="${wheel_radius}" length="${wheel_width}" />
-
+            <xacro:solid_cylinder_inertial rpy="0 0 0" xyz="0.0 0.0 0.0" mass="${wheel_mass}" radius="${wheel_radius}" length="${wheel_width}" />
         </link>
 
 
-        <joint name="front_${prefix}_wheel_joint" type="continuous">
-            <parent link="front_${prefix}_steer"/>
-            <child link="front_${prefix}_wheel"/>
+        <joint name="${prefix}_wheel_joint" type="continuous">
+            <parent link="${prefix}_steer"/>
+            <child link="${prefix}_wheel"/>
             <axis xyz="0 1 0"/>
             <origin xyz="0.0 0.0 -0.192" rpy="0 0 0"/>
             <limit effort="150" velocity="20"/>
-            <joint_properties damping="1.0" friction="1.0"/>
+            <dynamics damping="0.7" friction="0.7"/>
         </joint>
 
 
-
-        <transmission name="front_${prefix}_wheel_transmission">
-            <type>transmission_interface/SimpleTransmission</type>
-            <joint name="front_${prefix}_wheel_joint">
-                <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
-            </joint>
-            <actuator name="front_${prefix}_motor">
-                <mechanicalReduction>1.0</mechanicalReduction>
-                <motorTorqueConstant>1.0</motorTorqueConstant>
-                <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
-            </actuator>
-        </transmission>
+        <xacro:transmission_wheel prefix="${prefix}" />
 
 
-        <gazebo reference="front_${prefix}_wheel">
-            <mu1 value="1.0"/>
-			<mu2 value="1.0"/>
-			<kp value="10000000.0" />
-			<kd value="1.0" />
-			<fdir1 value="1 0 0"/>
+        <gazebo reference="${prefix}_wheel">
+            <mu1 value="1.6"/>
+			<mu2 value="1.6"/>
         </gazebo>
 
 
@@ -105,15 +77,9 @@
 
 
 
-
     <xacro:macro name="rear_wheel" params="prefix parent reflect ">
 
-        <xacro:property name="pos_x_joint" value="${((chassis_length / 2)- wheel_radius)}"/>
-        <xacro:property name="pos_y_joint" value="${((chassis_width / 2) - (wheel_width / 2))}"/>
-        <xacro:property name="pos_z_joint" value="-${chassis_to_ground - wheel_radius}"/>
-
-
-        <link name="rear_${prefix}_wheel">
+        <link name="${prefix}_wheel">
             <visual>
                 <geometry>
                     <mesh filename="package://fellahbot_description/meshes/Fellahbot_DAE/Parts/Geared_Hub_Motor-Fusion001.dae"/>
@@ -125,39 +91,25 @@
                     <mesh filename="package://fellahbot_description/meshes/Fellahbot_DAE/Parts/Geared_Hub_Motor-Fusion001.dae"/>
                 </geometry>
             </collision>
-            <xacro:solid_cylinder_inertial rpy="0 0 0" xyz="-0.335 ${(reflect * 0.17523)} -0.192" mass="${wheel_mass}" radius="${wheel_radius}" length="${wheel_width}" />
-
+            <xacro:solid_cylinder_inertial rpy="0 0 0" xyz="0.0 0.0 0.0" mass="${wheel_mass}" radius="${wheel_radius}" length="${wheel_width}" />
         </link>
 
 
-        <joint name="rear_${prefix}_wheel_joint" type="continuous">
+        <joint name="${prefix}_wheel_joint" type="continuous">
             <parent link="${parent}"/>
-            <child link="rear_${prefix}_wheel"/>
+            <child link="${prefix}_wheel"/>
             <axis xyz="0 1 0"/>
             <origin xyz="-0.335 ${(reflect * 0.17523)} -0.192" rpy="0 0 0"/>
             <limit effort="150" velocity="20"/>
-            <joint_properties damping="1.0" friction="1.0"/>
+            <dynamics damping="0.7" friction="0.7"/>
         </joint>
 
 
-        <transmission name="rear_${prefix}_wheel_transmission">
-            <type>transmission_interface/SimpleTransmission</type>
-            <joint name="rear_${prefix}_wheel_joint">
-                <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
-            </joint>
-            <actuator name="rear_${prefix}_motor">
-                <mechanicalReduction>1.0</mechanicalReduction>
-                <motorTorqueConstant>1.0</motorTorqueConstant>
-                <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
-            </actuator>
-        </transmission>
+        <xacro:transmission_wheel prefix="${prefix}" />
 
-        <gazebo reference="rear_${prefix}_wheel">
-            <mu1 value="1.0"/>
-			<mu2 value="1.0"/>
-			<kp value="10000000.0" />
-			<kd value="1.0" />
-			<fdir1 value="1 0 0"/>
+        <gazebo reference="${prefix}_wheel">
+            <mu1 value="1.6"/>
+			<mu2 value="1.6"/>
         </gazebo>
 
 
