@@ -3,16 +3,16 @@ ackermann_steering_controller:
   type        : "ackermann_steering_controller/AckermannSteeringController"
 
   # Joints
-  rear_wheel: 'wheel_joint'
-  front_steer: 'steer_joint'
+  rear_wheel: 'ackermann_wheel_joint'
+  front_steer: 'ackermann_steer_joint'
 
   # Odometry related 
-  publish_rate: 10                    # default: 50.0
-  open_loop: false
+  publish_rate: 50                    # default: 50.0
+  open_loop: true
 
   # Odometry covariances for the encoder output of the robot.
   pose_covariance_diagonal: [0.001, 0.001, 0.001, 0.001, 0.001, 0.03]
-  twist_covariance_diagonal: [0.001, 0.001, 0.001, 0.001, 0.001, 0.03]
+  twist_covariance_diagonal: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
   # pose_covariance_diagonal : [0.001, 0.001, 1000000.0, 1000000.0, 1000000.0, 1000.0]
   # twist_covariance_diagonal: [0.001, 0.001, 1000000.0, 1000000.0, 1000000.0, 1000.0]
 
