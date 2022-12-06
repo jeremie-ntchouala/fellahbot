@@ -6,10 +6,13 @@
   <xacro:include filename="$(find fellahbot_description)/urdf/materials.xacro"/>
   <xacro:include filename="$(find fellahbot_description)/urdf/plugin.gazebo.xacro"/>
   <xacro:include filename="$(find fellahbot_description)/urdf/wheel.xacro"/>
+  <xacro:include filename="$(find fellahbot_description)/urdf/transmission.xacro"/>
+  <xacro:include filename="$(find fellahbot_description)/urdf/ackermann_controller.xacro"/>
 
 
 
   <link name="base_link"/>
+
 
   <!-- Chassis link -->
   <link name="chassis">
@@ -22,17 +25,17 @@
     </visual>
     <collision>
       <geometry>
-        <box size="${chassis_length} ${chassis_width} ${chassis_height}"/>
+        <mesh filename="package://fellahbot_description/meshes/Fellahbot_DAE/Parts/ChassisRobot-Fusion001.dae"/>
       </geometry>
     </collision>
-    <xacro:solid_cuboid_inertial rpy="0 0 0" xyz="0.0 0.0 0.359" mass="${chassis_mass}" x="${chassis_length}" y="${chassis_width}" z="0.411" />
+    <xacro:solid_cuboid_inertial rpy="0 0 0" xyz="0.0 0.0 0.0" mass="${chassis_mass}" x="${chassis_length}" y="${chassis_width}" z="0.411" />
   </link>
   <joint name="base_robot" type="fixed">
     <parent link="base_link"/>
     <child link="chassis"/>
     <origin rpy="0 0 0" xyz="0 0 0.359"/>
+    <dynamics damping="0.0" friction="0.0"/>
   </joint>
-
 
 
   <!-- lidar link -->
@@ -48,12 +51,13 @@
         <mesh filename="package://fellahbot_description/meshes/Fellahbot_DAE/Parts/Support_lidar-Body.dae"/>
       </geometry>
     </collision>
-    <xacro:solid_cylinder_inertial rpy="0 0 0" xyz="0.455 0.0 -0.028" mass="0.3" radius="0.04" length="0.06" />
+    <xacro:solid_cylinder_inertial rpy="0 0 0" xyz="0.0 0.0 0.0" mass="0.3" radius="0.04" length="0.06" />
   </link>
   <joint name="base_lidar" type="fixed">
     <parent link="chassis"/>
     <child link="laser"/>
     <origin xyz="0.455 0.0 -0.028"/>
+    <dynamics damping="0.0" friction="0.0"/>
   </joint>
 
 
@@ -71,14 +75,16 @@
         <box size="0.01 .06 0.03"/>
       </geometry>
     </collision>
-    <xacro:solid_cuboid_inertial rpy="0 0 0" xyz="0.555 0.0 0.130" mass="0.2" x="0.01" y="0.06" z="0.03" />
+    <xacro:solid_cuboid_inertial rpy="0 0 0" xyz="0.0 0.0 0.0" mass="0.2" x="0.01" y="0.06" z="0.03" />
     <xacro:default_inertial mass="0.2"/>
   </link>
   <joint name="base_camera_sensor" type="fixed">
     <parent link="chassis"/>
     <child link="camera"/>
     <origin xyz="0.555 0.0 0.130"/>
+    <dynamics damping="0.0" friction="0.0"/>
   </joint>
+
 
   <!-- camera link -->
   <link name="imu_link">
@@ -94,13 +100,14 @@
         <box size="0.06 .03 0.01"/>
       </geometry>
     </collision>
-    <xacro:solid_cuboid_inertial rpy="0 0 0" xyz="0.319 0.0 0.130" mass="0.2" x="0.06" y="0.03" z="0.01" />
+    <xacro:solid_cuboid_inertial rpy="0 0 0" xyz="0.0 0.0 0.0" mass="0.02" x="0.06" y="0.03" z="0.01" />
     <xacro:default_inertial mass="0.02"/>
   </link>
   <joint name="base_imu_sensor" type="fixed">
     <parent link="chassis"/>
     <child link="imu_link"/>
     <origin xyz="0.319 0.0 0.130"/>
+    <dynamics damping="0.0" friction="0.0"/>
   </joint>
 
 
@@ -115,120 +122,35 @@
     </visual>
     <collision>
       <geometry>
-        <cylinder radius="0.03" length="0.3"/>
+        <cylinder radius="0.025" length="0.290"/>
       </geometry>
       <origin rpy="${math_pi_over_2} 0 0" xyz="0 0 0"/>
     </collision>
-    <xacro:solid_cylinder_inertial rpy="0 0 0" xyz="0.556 0.0 0.27444" mass="0.5" radius="0.025" length="0.29" />
+    <xacro:solid_cylinder_inertial rpy="0 0 0" xyz="0.0 0.0 0.0" mass="0.5" radius="0.025" length="0.29" />
   </link>
   <joint name="base_phare" type="fixed">
     <parent link="chassis"/>
     <child link="phare"/>
     <origin xyz="0.556 0.0 0.27444"/>
+    <dynamics damping="0.0" friction="0.0"/>
   </joint>
 
 
   <!-- Wheels -->
-  <xacro:front_steer_wheel prefix="left" parent="chassis" reflect="1" />
+  <xacro:front_steer_wheel prefix="front_left" parent="chassis" reflect="1" />
 
-  <xacro:front_steer_wheel prefix="right" parent="chassis" reflect="-1" />
 
-  <xacro:rear_wheel prefix="left" parent="chassis" reflect="1" />
+  <xacro:front_steer_wheel prefix="front_right" parent="chassis" reflect="-1" />
 
-  <xacro:rear_wheel prefix="right" parent="chassis" reflect="-1" />
+
+  <xacro:rear_wheel prefix="rear_left" parent="chassis" reflect="1" />
+
+
+  <xacro:rear_wheel prefix="rear_right" parent="chassis" reflect="-1" />
 
 
   <!-- joints for ackermann_steering_controller -->
-  <link name="steer_link">
-    <visual>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <geometry>
-        <cylinder radius="0.05" length="0.03"/>
-      </geometry>
-      <material name="yellow"/>
-    </visual>
-    <collision>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <geometry>
-        <cylinder radius="0.05" length="0.03"/>
-      </geometry>
-      <material name="yellow"/>
-    </collision>
-    <xacro:solid_cylinder_inertial rpy="0 0 0" xyz="0.319 0.0 0.0" mass="6" radius="0.05" length="0.03" />
-  </link>
-  <joint name="steer_joint" type="revolute">
-    <parent link="chassis"/>
-    <child link="steer_link"/>
-    <axis xyz="0 0 1"/>
-    <limit lower="${-math_pi_over_6_29}" upper="${math_pi_over_6}" velocity="50.0" effort="100.0"/>
-    <origin xyz="0.319 0.0 0.0"/>
-  </joint>
-  <!-- Transmission is important to link the joints and the controller -->
-  <transmission name="steer_joint_trans">
-    <type>transmission_interface/SimpleTransmission</type>
-    <actuator name="steer_joint_motor">
-      <mechanicalReduction>1.0</mechanicalReduction>
-      <motorTorqueConstant>1.0</motorTorqueConstant>
-      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
-    </actuator>
-    <joint name="steer_joint">
-      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
-    </joint>
-  </transmission>
-  <gazebo reference="steer_link">
-    <material>Gazebo/Yellow</material>
-    <mu1 value="1.0"/>
-    <mu2 value="1.0"/>
-    <kp value="10000000.0" />
-    <kd value="1.0" />
-    <fdir1 value="1 0 0"/>
-  </gazebo>
-
-
-  <link name="wheel_link">
-    <visual>
-      <origin xyz="0 0 0" rpy="${math_pi_over_2} 0 0"/>
-      <geometry>
-        <cylinder radius="0.03" length="0.05"/>
-      </geometry>
-      <material name="yellow"/>
-    </visual>
-    <collision>
-      <origin xyz="0 0 0" rpy="${math_pi_over_2} 0 0"/>
-      <geometry>
-        <cylinder radius="0.03" length="0.05"/>
-      </geometry>
-      <material name="yellow"/>
-    </collision>
-    <xacro:solid_cylinder_inertial rpy="0 0 0" xyz="-0.335 0.0 -0.192" mass="6" radius="0.03" length="0.05" />
-  </link>
-  <joint name="wheel_joint" type="continuous">
-    <parent link="chassis"/>
-    <child link="wheel_link"/>
-    <origin xyz="-0.335 0.0 -0.192" rpy="0 0 0"/>
-    <limit effort="150" velocity="20"/>
-    <joint_properties damping="1.0" friction="1.0"/>
-  </joint>
-  <!-- Transmission is important to link the joints and the controller -->
-  <transmission name="wheel_transmission">
-    <type>transmission_interface/SimpleTransmission</type>
-    <joint name="wheel_joint">
-      <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
-    </joint>
-    <actuator name="wheel_joint_motor">
-      <mechanicalReduction>1.0</mechanicalReduction>
-      <motorTorqueConstant>1.0</motorTorqueConstant>
-      <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
-    </actuator>
-  </transmission>
-  <gazebo reference="wheel_link">
-    <material>Gazebo/Yellow</material>
-    <mu1 value="1.0"/>
-    <mu2 value="1.0"/>
-    <kp value="10000000.0" />
-    <kd value="1.0" />
-    <fdir1 value="1 0 0"/>
-  </gazebo>
+  <xacro:ackermann_steering_controller prefix="ackermann" parent="chassis" />
 
 
 
