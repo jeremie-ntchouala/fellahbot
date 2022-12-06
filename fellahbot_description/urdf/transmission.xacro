@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="transmission">
+
+    <xacro:macro name="transmission_steer" params="prefix ">
+
+        <transmission name="${prefix}_steer_transmission">
+            <type>transmission_interface/SimpleTransmission</type>
+            <joint name="${prefix}_steer_joint">
+                <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+            </joint>
+            <actuator name="${prefix}_steer_motor">
+                <mechanicalReduction>1.0</mechanicalReduction>
+                <motorTorqueConstant>12.0</motorTorqueConstant>
+                <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+            </actuator>
+        </transmission>
+
+    </xacro:macro>
+
+
+    <xacro:macro name="transmission_wheel" params="prefix ">
+
+        <transmission name="${prefix}_wheel_transmission">
+            <type>transmission_interface/SimpleTransmission</type>
+            <joint name="${prefix}_wheel_joint">
+                <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+            </joint>
+            <actuator name="${prefix}_wheel_motor">
+                <mechanicalReduction>1.0</mechanicalReduction>
+                <motorTorqueConstant>12.0</motorTorqueConstant>
+                <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+            </actuator>
+        </transmission>
+
+    </xacro:macro>
+
+
+</robot>

@@ -43,7 +43,7 @@
 
 	<xacro:property name="x_reference_heading" value="90.0" />
 
-
+	<!-- Joint position -->
 	<xacro:property name="pos_x_joint" value="${((chassis_length / 2)- wheel_radius)}"/>
 	<xacro:property name="pos_y_joint" value="${((chassis_width / 2) - (wheel_width / 2))}"/>
 	<xacro:property name="pos_z_joint" value="-${chassis_to_ground - wheel_radius}"/>
