@@ -16,6 +16,7 @@
 
     <arg name="world_name" value="worlds/empty_world" />
     <arg name="world_name_1" value="$(find fellahbot_gazebo)/worlds/bot_house.world" />
+    <arg name="world_name_2" value="$(find fellahbot_gazebo)/worlds/clearpath_playpen.world" />
     <arg name="cmd_timeout" value="0.5"/>
     <arg name="x" value="0.0"/>
     <arg name="y" value="0.0"/>
@@ -23,6 +24,8 @@
     <arg name="roll" value="0.0"/>
     <arg name="pitch" value="0.0"/>
     <arg name="yaw" value="0.0"/>
+
+    <rosparam file="$(find object_follower_sim)/config/object_follower.yaml" command="load" />
 
     <group ns="$(arg arg_name)">
 
@@ -48,7 +51,7 @@
         <rosparam file="$(find fellahbot_description)/config/control/fellahbot_steer_bot_hardware_gazebo.yaml" command="load" ns="$(arg arg_name)" />
 
         <!-- Spawn the controllers -->
-        <node pkg="controller_manager" type="spawner" name="controller_spawner" ns="$(arg arg_name)" args="joint_state_publisher ackermann_steering_controller" output="screen" respawn="false" />
+        <node pkg="controller_manager" type="spawner" name="controller_spawner" ns="$(arg arg_name)" args="joint_state_publisher ackermann_steering_controller" output="screen" respawn="false" clear_params="true"/>
 
         <!-- Launch  the robot state publisher -->
         <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher">
@@ -67,10 +70,10 @@
                     -param robot_description
                     -gazebo_namespace $(arg arg_name)/gazebo
                     -x $(arg x) -y $(arg y) -z $(arg z)
-                    -R $(arg roll) -P $(arg pitch) -Y $(arg yaw)" respawn="false" output="screen" />
+                    -R $(arg roll) -P $(arg pitch) -Y $(arg yaw)" respawn="false" output="screen" clear_params="true"/>
 
         <!--RViz-->
-        <node type="rviz" name="fellahbot_rviz" pkg="rviz" args="-d $(find fellahbot_description)/rviz/fellahbot_view_model.rviz" />
+        <node type="rviz" name="fellahbot_rviz" pkg="rviz" args="-d $(find fellahbot_description)/rviz/fellahbot_view_model.rviz" clear_params="true"/>
 
 
     </group>
