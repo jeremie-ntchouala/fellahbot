@@ -8,7 +8,7 @@ ackermann_steering_controller:
 
   # Odometry related 
   publish_rate: 50                    # default: 50.0
-  open_loop: true
+  open_loop: false
 
   # Odometry covariances for the encoder output of the robot.
   pose_covariance_diagonal: [0.001, 0.001, 0.001, 0.001, 0.001, 0.03]
