@@ -49,7 +49,7 @@
                     <mesh filename="package://fellahbot_description/meshes/Fellahbot_DAE/Parts/Geared_Hub_Motor-Fusion001.dae"/>
                 </geometry>
             </collision>
-            <xacro:solid_cylinder_inertial rpy="0 0 0" xyz="0.0 0.0 0.0" mass="${wheel_mass}" radius="${wheel_radius}" length="${wheel_width}" />
+            <xacro:solid_cylinder_inertial rpy="${math_pi_over_2} 0 0" xyz="0.0 0.0 0.0" mass="${wheel_mass}" radius="${wheel_radius}" length="${wheel_width}" />
         </link>
 
 
@@ -91,7 +91,7 @@
                     <mesh filename="package://fellahbot_description/meshes/Fellahbot_DAE/Parts/Geared_Hub_Motor-Fusion001.dae"/>
                 </geometry>
             </collision>
-            <xacro:solid_cylinder_inertial rpy="0 0 0" xyz="0.0 0.0 0.0" mass="${wheel_mass}" radius="${wheel_radius}" length="${wheel_width}" />
+            <xacro:solid_cylinder_inertial rpy="${math_pi_over_2} 0 0" xyz="0.0 0.0 0.0" mass="${wheel_mass}" radius="${wheel_radius}" length="${wheel_width}" />
         </link>
 
 

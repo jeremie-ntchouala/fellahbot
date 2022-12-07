@@ -28,7 +28,7 @@
         <mesh filename="package://fellahbot_description/meshes/Fellahbot_DAE/Parts/ChassisRobot-Fusion001.dae"/>
       </geometry>
     </collision>
-    <xacro:solid_cuboid_inertial rpy="0 0 0" xyz="0.0 0.0 0.0" mass="${chassis_mass}" x="${chassis_length}" y="${chassis_width}" z="0.411" />
+    <xacro:solid_cuboid_inertial rpy="0 0 0" xyz="0.0 0.0 0.0" mass="${chassis_mass}" x="${chassis_length}" y="${chassis_width}" z="${chassis_height_v2}" />
   </link>
   <joint name="base_robot" type="fixed">
     <parent link="base_link"/>
@@ -150,7 +150,7 @@
 
 
   <!-- joints for ackermann_steering_controller -->
-  <xacro:ackermann_steering_controller prefix="ackermann" parent="chassis" />
+  <xacro:ackermann_steering_controller_link prefix="ackermann" parent="chassis" />
 
 
 
