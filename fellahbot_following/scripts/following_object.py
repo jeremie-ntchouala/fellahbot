@@ -18,14 +18,14 @@ import cv2
 from fellahbot_following.following_driver import FollowingDriver
 from fellahbot_following.image_processing import ImageProcessing
 from cv_bridge import CvBridge, CvBridgeError
-from geometry_msgs.msg import Twist
+from geometry_msgs.msg import Twist, Vector3
 from std_msgs.msg import Int32
 from std_srvs.srv import Trigger
 from sensor_msgs.msg import Image
 from diagnostic_msgs.msg import DiagnosticStatus, KeyValue
 
 
-class FollowingDriverROSWrapper:
+class FollowingDriverROSWrapper():
     def __init__(self):
 
         rospy.Subscriber("speed_command", Int32, self.callback_speed_command)
@@ -38,15 +38,19 @@ class FollowingDriverROSWrapper:
 
     def _init_data_varaible(self, ):
         self.cv_image = None
-        self.max_speed = 0
+        self.max_lin_vel = 3
+        self.max_ang_vel = 0.5
         self.publish_current_speed_frequency = 0
         self.publish_motor_status_frequency = 0
+        self.target_area = 25000
+        self.target_center = 320
 
     def _init_parameter_variable(self, ):
-        self.max_speed = rospy.get_param("~max_speed", 8)
+        self.max_lin_vel = rospy.get_param("~max_lin_vel", 3)
+        self.max_ang_vel = rospy.get_param("~max_ang_vel", 0.5)
         self.publish_current_speed_frequency = rospy.get_param("~publish_current_speed_frequency", 5.0)
         self.publish_motor_status_frequency = rospy.get_param("~publish_following_status_frequency", 1.0)
-        self.controller = FollowingDriver(max_speed=self.max_speed)
+        self.controller = FollowingDriver(max_linear_speed=self.max_lin_vel, max_steering_speed=self.max_ang_vel, target= [self.target_area, self.target_center], Proportional=[0.00005, 0.003], Integrator=[0, 0.000005], Derivator=[0.000001, 0.001])
 
     def _init_service(self, ):
         rospy.Service("stop_following", Trigger, self.callback_stop)
@@ -63,12 +67,11 @@ class FollowingDriverROSWrapper:
 
     def _init_controller_publisher(self, ):
         self.velocity_msg = Twist()  # Creating a messgae from the Twist template
-        self.pub = rospy.Publisher('test1/ackermann_steering_controller/cmd_vel', Twist, queue_size=10)  # Publisher to publish the velocities
+        self.cmd_vel_pub = rospy.Publisher('test1/ackermann_steering_controller/cmd_vel', Twist, queue_size=10)  # Publisher to publish the velocities
 
     def image_callback(self, data):
         try:
             self.cv_image = self.bridge.imgmsg_to_cv2(data, "bgr8")
-            # self.controller.compute_control(self.cv_image) 
             self.control_loop()
         except CvBridgeError as e:
             print(e)
@@ -79,18 +82,45 @@ class FollowingDriverROSWrapper:
         sc = ImageProcessing()
         # process Image to detect object in the image
         result = sc.process_image(self.cv_image)
-        x_length = result[0].shape[1]
-        x = int(x_length/2)    # Center of the image
-        # print(result[2])
-        print('bounding box v1 : ', result[4])
-        print('bounding box area : ', result[4][2] * result[4][3])
+        img_length = result[0].shape[1]
+        length_mid = int(img_length/2)    # Center of the image
+        current_area = 0
+        current_center = 320
+        
+        print('bounding box center : ', result[4])
+        print('bounding box area : ', result[6])
         # Showing the Original Frame and the Masked Frame
+
+        rect_area = result[6]
+        rect_center = result[2][0]
+        if rect_area > current_area :
+            current_area = rect_area
+            current_center = rect_center
+
+        """
+        if current_area > 10000:
+            if (abs(self.target_area - current_area) < 10000):
+                current_area = 25000
+            if (abs(self.target_center - current_center) < 15):
+                current_center = 320
+        """
+        data = [current_area ,current_center]
+        self.controller.compute_control(data) 
+        self.send_command()
+            
         cv2.imshow("Frame", result[0])
         mask3 = cv2.cvtColor(result[1], cv2.COLOR_GRAY2BGR)
         im_thresh_color = cv2.bitwise_and(result[0], mask3)
-        cv2.line(im_thresh_color, (x, 0), (x, result[0].shape[1]), (255, 0, 0), 2)
+        cv2.putText(im_thresh_color,"Area = "+str(round(result[6],2)),(length_mid-140,50),cv2.FONT_HERSHEY_SIMPLEX,1,(255,0,0),2,cv2.LINE_AA)
+        cv2.line(im_thresh_color, (length_mid, 0), (length_mid, result[0].shape[1]), (255, 0, 0), 2)
         cv2.imshow("Mask", im_thresh_color)
-        cv2.waitKey(1)
+        cv2.waitKey(3)
+
+    def send_command(self, ):
+        # Publish Twist command
+        self.velocity_msg.linear = Vector3(self.controller.get_speed(), 0.0, 0.0)
+        self.velocity_msg.angular= Vector3(0.0, 0.0, self.controller.get_steering())
+        self.cmd_vel_pub.publish(self.velocity_msg)
 
     def publish_current_speed(self, event=None):
         self.current_speed_pub.publish(self.controller.get_speed())

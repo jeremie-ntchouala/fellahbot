@@ -17,7 +17,7 @@ import time
 import numpy as np
 
 
-class ControllerPID:
+class ControllerPID():
     """very simple discrete PID controller"""
 
     def __init__(self, target, P, I, D):
@@ -67,13 +67,13 @@ class ControllerPID:
         if self.timeOfLastCall is None:
             # if the PID was called for the first time. we don't know the deltaT yet
             # no controll signal is applied
-            self.timeOfLastCall = time.clock()
+            self.timeOfLastCall = time.time()
             return np.zeros(np.size(current_value))
 
         error = self.setPoint - current_value
         P = error
 
-        currentTime = time.clock()
+        currentTime = time.time()
         deltaT = (currentTime - self.timeOfLastCall)
 
         # integral of the error is current error * time since last update
