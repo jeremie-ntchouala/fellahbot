@@ -75,7 +75,7 @@ class FollowingDriverROSWrapper():
             self.control_loop()
         except CvBridgeError as e:
             print(e)
-            self.controller.stop()
+            self.stop()
 
     def control_loop(self, ):
         # Creating an object of the class Image processing to process the incoming image
@@ -87,39 +87,51 @@ class FollowingDriverROSWrapper():
         current_area = 0
         current_center = 320
         
-        print('bounding box center : ', result[4])
+        print('bounding box center : ', result[2])
         print('bounding box area : ', result[6])
         # Showing the Original Frame and the Masked Frame
 
-        rect_area = result[6]
-        rect_center = result[2][0]
-        if rect_area > current_area :
-            current_area = rect_area
-            current_center = rect_center
+        try :
+            rect_area = result[6]
+            rect_center = result[2][0]
+            if rect_area > current_area :
+                current_area = rect_area
+                current_center = rect_center
 
-        """
-        if current_area > 10000:
-            if (abs(self.target_area - current_area) < 10000):
-                current_area = 25000
-            if (abs(self.target_center - current_center) < 15):
-                current_center = 320
-        """
-        data = [current_area ,current_center]
-        self.controller.compute_control(data) 
-        self.send_command()
-            
-        cv2.imshow("Frame", result[0])
-        mask3 = cv2.cvtColor(result[1], cv2.COLOR_GRAY2BGR)
-        im_thresh_color = cv2.bitwise_and(result[0], mask3)
-        cv2.putText(im_thresh_color,"Area = "+str(round(result[6],2)),(length_mid-140,50),cv2.FONT_HERSHEY_SIMPLEX,1,(255,0,0),2,cv2.LINE_AA)
-        cv2.line(im_thresh_color, (length_mid, 0), (length_mid, result[0].shape[1]), (255, 0, 0), 2)
-        cv2.imshow("Mask", im_thresh_color)
-        cv2.waitKey(3)
+        except TypeError:
+            self.stop()
+            print("None type error receiving data")
+
+        else:
+            if current_area > 500:
+                if (abs(self.target_area - current_area) < 1000):
+                    current_area = 25000
+                if (abs(self.target_center - current_center) < 15):
+                    current_center = 320
+
+                data = [current_area, current_center]
+                self.controller.compute_control(data)
+
+                cv2.imshow("Frame", result[0])
+                mask3 = cv2.cvtColor(result[1], cv2.COLOR_GRAY2BGR)
+                im_thresh_color = cv2.bitwise_and(result[0], mask3)
+                cv2.putText(im_thresh_color, "Area = "+str(round(result[6], 2)), (
+                    length_mid-140, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2, cv2.LINE_AA)
+                cv2.line(im_thresh_color, (length_mid, 0),
+                         (length_mid, result[0].shape[1]), (255, 0, 0), 2)
+                cv2.imshow("Mask", im_thresh_color)
+                cv2.waitKey(3)
+        finally :
+            self.send_command()
 
     def send_command(self, ):
         # Publish Twist command
-        self.velocity_msg.linear = Vector3(self.controller.get_speed(), 0.0, 0.0)
-        self.velocity_msg.angular= Vector3(0.0, 0.0, self.controller.get_steering())
+        if self.controller.get_speed() < 0 : # Maintain direction straigh 
+            self.velocity_msg.linear = Vector3(self.controller.get_speed(), 0.0, 0.0)
+            self.velocity_msg.angular= Vector3(0.0, 0.0, -1*self.controller.get_steering())
+        else :
+            self.velocity_msg.linear = Vector3(self.controller.get_speed(), 0.0, 0.0)
+            self.velocity_msg.angular= Vector3(0.0, 0.0, self.controller.get_steering())
         self.cmd_vel_pub.publish(self.velocity_msg)
 
     def publish_current_speed(self, event=None):

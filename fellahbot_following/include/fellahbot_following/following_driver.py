@@ -62,9 +62,9 @@ class FollowingDriver():
         """
         Give a speed that the motor will try to reach.
         """
-        if abs(steering) <= self.max_steering_speed:
+        if abs(steering) < self.max_steering_speed:
             self.current_steering_speed = steering
-        else:
+        else :
             self.current_steering_speed = self.max_steering_speed
 
     def stop(self):
